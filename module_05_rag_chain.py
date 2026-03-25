@@ -1,13 +1,13 @@
 """
 ============================================================
-🧠 MODULE 5: The Complete RAG Chain (Bringing It All Together!)
+ MODULE 5: The Complete RAG Chain (Bringing It All Together!)
 ============================================================
 
-📖 WHAT WE'RE DOING:
+ WHAT WE'RE DOING:
     This is where everything comes together! We're building a complete
     RAG (Retrieval Augmented Generation) pipeline:
     
-    📄 PDF → ✂️ Chunks → 🔢 Embeddings → 💾 ChromaDB → 🔍 Retrieve → 🤖 Answer
+     PDF → ✂️ Chunks →  Embeddings →  ChromaDB →  Retrieve →  Answer
     
     Here's how it works:
       1. User asks a question
@@ -15,7 +15,7 @@
       3. We send those chunks + the question to the LLM
       4. The LLM reads the chunks and gives a grounded answer
 
-📖 WHY RAG?
+ WHY RAG?
     Without RAG, the AI can only answer from its training data.
     With RAG, the AI can answer from YOUR documents!
     
@@ -24,10 +24,10 @@
 ⚠️ THE PROBLEM (HALLUCINATIONS):
     You ask: "What is the company's revenue?"
     The PDF doesn't mention revenue at all.
-    But the AI MAKES UP a number! "The company's revenue is $5M" 😱
+    But the AI MAKES UP a number! "The company's revenue is $5M" 
     This is called a "hallucination."
 
-✅ THE SOLUTION:
+ THE SOLUTION:
     In our prompt, we add a strict rule:
     "If the answer is NOT in the provided context, strictly say 
      'I don't know based on the provided document.'"
@@ -76,14 +76,14 @@ load_dotenv()
 # ============================================================
 
 # --- The Brain (LLM) ---
-print("🤖 Initializing LLM...")
+print(" Initializing LLM...")
 llm = ChatGroq(
     model="llama-3.3-70b-versatile",
     temperature=0
 )
 
 # --- The Embedding Model ---
-print("🔢 Loading embedding model...")
+print(" Loading embedding model...")
 embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 
 
@@ -91,9 +91,9 @@ embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 # STEP 3: Load, Chunk, and Store the PDF
 # ============================================================
 
-pdf_path = "TransformerAttenctionMechanism.pdf"  # 📌 Change to YOUR PDF path
+pdf_path = "TransformerAttenctionMechanism.pdf"  #  Change to YOUR PDF path
 
-print(f"📄 Loading PDF: {pdf_path}")
+print(f" Loading PDF: {pdf_path}")
 loader = PyPDFLoader(pdf_path)
 pages = loader.load()
 
@@ -105,7 +105,7 @@ text_splitter = RecursiveCharacterTextSplitter(
 chunks = text_splitter.split_documents(pages)
 print(f"   → {len(chunks)} chunks created")
 
-print("💾 Storing in ChromaDB...")
+print(" Storing in ChromaDB...")
 vector_store = Chroma.from_documents(
     documents=chunks,
     embedding=embeddings,
@@ -174,7 +174,7 @@ retriever = vector_store.as_retriever(
 # This chain: Question → Retrieve chunks → Stuff into prompt → LLM → Answer
 rag_chain = create_retrieval_chain(retriever, document_chain)
 
-print("🔗 RAG Chain is ready!\n")
+print(" RAG Chain is ready!\n")
 
 
 # ============================================================
@@ -184,13 +184,13 @@ print("🔗 RAG Chain is ready!\n")
 # Let's test with a question that should be in the PDF
 question1 = "What is the dimension of the embedding vector?"
 
-print(f"❓ Question 1: {question1}\n")
+print(f" Question 1: {question1}\n")
 response1 = rag_chain.invoke({"input": question1})
 
-print(f"📨 Answer: {response1['answer']}\n")
+print(f" Answer: {response1['answer']}\n")
 
 # Let's also see which chunks were used to answer
-print(f"📚 Sources used ({len(response1['context'])} chunks):")
+print(f" Sources used ({len(response1['context'])} chunks):")
 for i, doc in enumerate(response1['context'], 1):
     page_num = doc.metadata.get('page', '?')
     preview = doc.page_content[:100].replace('\n', ' ')
@@ -202,16 +202,16 @@ for i, doc in enumerate(response1['context'], 1):
 # ============================================================
 
 print("\n" + "="*50)
-print("🧪 HALLUCINATION TEST\n")
+print(" HALLUCINATION TEST\n")
 
 # This question is almost certainly NOT in any PDF
 question2 = "What is the recipe for chocolate cake?"
 
-print(f"❓ Question 2: {question2}\n")
+print(f" Question 2: {question2}\n")
 response2 = rag_chain.invoke({"input": question2})
 
-print(f"📨 Answer: {response2['answer']}")
-print(f"\n👆 The AI should say 'I don't know' because this isn't in the PDF!")
+print(f" Answer: {response2['answer']}")
+print(f"\n The AI should say 'I don't know' because this isn't in the PDF!")
 
-print("\n✅ RAG Chain working with hallucination protection!")
-print("🎓 Next: Module 6 — Building the Streamlit UI (Final Product!)")
+print("\n RAG Chain working with hallucination protection!")
+print(" Next: Module 6 — Building the Streamlit UI (Final Product!)")
