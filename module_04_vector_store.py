@@ -48,6 +48,14 @@
 # STEP 1: Imports
 # ============================================================
 
+import os
+import warnings
+
+# Suppress warnings and telemetry logs BEFORE importing Chroma
+warnings.filterwarnings("ignore", category=FutureWarning)
+os.environ["ANONYMIZED_TELEMETRY"] = "False"
+os.environ["CHROMA_TELEMETRY"] = "False"
+
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
@@ -59,14 +67,12 @@ from langchain_huggingface import HuggingFaceEmbeddings
 # We use the LangChain wrapper which makes it super easy to use
 from langchain_chroma import Chroma
 
-import os
-
 
 # ============================================================
 # STEP 2: Load and Chunk the PDF (same as Module 3)
 # ============================================================
 
-pdf_path = "sample.pdf"  # 📌 Change to YOUR PDF path
+pdf_path = "TransformerAttenctionMechanism.pdf"  # 📌 Change to YOUR PDF path
 
 print(f"📄 Loading PDF: {pdf_path}")
 loader = PyPDFLoader(pdf_path)
@@ -141,7 +147,7 @@ print(f"   (This data survives script restarts!)\n")
 # ChromaDB converts our question into an embedding and finds
 # the chunks with the most similar embeddings.
 
-query = "What is the main topic of this document?"
+query = "What is attention mechanism?"
 
 print(f"🔍 Searching for: \"{query}\"\n")
 
@@ -172,10 +178,11 @@ existing_store = Chroma(
 )
 
 # Search the existing database
-results2 = existing_store.similarity_search("summary", k=1)
+results2 = existing_store.similarity_search("Attention", k=1)
 if results2:
     print(f"📄 Found from existing DB (Page {results2[0].metadata.get('page', '?')}):")
     print(f"   {results2[0].page_content[:200]}...")
 
 print("\n✅ Vector store created and searchable!")
 print("🎓 Next: Module 5 — Building the complete RAG chain")
+

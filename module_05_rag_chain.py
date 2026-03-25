@@ -62,6 +62,11 @@ from langchain_chroma import Chroma
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.chains.retrieval import create_retrieval_chain
 
+# warnings
+import warnings
+warnings.filterwarnings("ignore", category=FutureWarning)
+warnings.filterwarnings("ignore", category=UserWarning)
+
 # Load secrets
 load_dotenv()
 
@@ -86,7 +91,7 @@ embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 # STEP 3: Load, Chunk, and Store the PDF
 # ============================================================
 
-pdf_path = "sample.pdf"  # 📌 Change to YOUR PDF path
+pdf_path = "TransformerAttenctionMechanism.pdf"  # 📌 Change to YOUR PDF path
 
 print(f"📄 Loading PDF: {pdf_path}")
 loader = PyPDFLoader(pdf_path)
@@ -177,7 +182,7 @@ print("🔗 RAG Chain is ready!\n")
 # ============================================================
 
 # Let's test with a question that should be in the PDF
-question1 = "What is the main topic of this document?"
+question1 = "What is the dimension of the embedding vector?"
 
 print(f"❓ Question 1: {question1}\n")
 response1 = rag_chain.invoke({"input": question1})
