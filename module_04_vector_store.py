@@ -1,15 +1,15 @@
 """
 ============================================================
-🧠 MODULE 4: The Vector Store (ChromaDB)
+ MODULE 4: The Vector Store (ChromaDB)
 ============================================================
 
-📖 WHAT WE'RE DOING:
+ WHAT WE'RE DOING:
     In Module 3, we split our PDF into chunks. Now we need to:
       1. Convert each chunk into an "Embedding" (a list of numbers)
       2. Store those embeddings in a "Vector Database" (ChromaDB)
       3. Search the database to find chunks similar to a question
 
-📖 WHAT IS AN EMBEDDING?
+ WHAT IS AN EMBEDDING?
     An embedding converts text into a list of numbers (a "vector").
     
     Example (simplified):
@@ -19,23 +19,23 @@
     
     Similar meanings → similar numbers → we can find related text!
     
-📖 WHAT IS A VECTOR DATABASE?
+ WHAT IS A VECTOR DATABASE?
     A special database optimized for storing embeddings and finding
     "similar" vectors quickly. Think of it like Google Search but
     for your own private documents.
 
-📖 WHY HUGGINGFACE EMBEDDINGS?
+ WHY HUGGINGFACE EMBEDDINGS?
     They're FREE and run LOCALLY on your computer.
     No API key needed! (Unlike OpenAI embeddings which cost money)
 
 ⚠️ THE PROBLEM:
     If we use ChromaDB's default mode, the database lives only in
     RAM (memory). Every time you restart your script → data is GONE!
-    You'd have to re-process the entire PDF again. 😱
+    You'd have to re-process the entire PDF again. 
 
-✅ THE SOLUTION:
+ THE SOLUTION:
     Use a "Persistent" directory. ChromaDB saves the data to your
-    hard drive, so it survives restarts. Like saving a game! 💾
+    hard drive, so it survives restarts. Like saving a game! 
 
 ▶️ HOW TO RUN:
     python module_04_vector_store.py
@@ -72,9 +72,9 @@ from langchain_chroma import Chroma
 # STEP 2: Load and Chunk the PDF (same as Module 3)
 # ============================================================
 
-pdf_path = "TransformerAttenctionMechanism.pdf"  # 📌 Change to YOUR PDF path
+pdf_path = "TransformerAttenctionMechanism.pdf"  #  Change to YOUR PDF path
 
-print(f"📄 Loading PDF: {pdf_path}")
+print(f" Loading PDF: {pdf_path}")
 loader = PyPDFLoader(pdf_path)
 pages = loader.load()
 
@@ -94,10 +94,10 @@ print(f"✂️  Created {len(chunks)} chunks from {len(pages)} pages\n")
 # It converts any text into a 384-dimensional vector
 # (384 numbers that represent the "meaning" of the text)
 #
-# 💡 FIRST RUN: This will download the model (~90MB)
+#  FIRST RUN: This will download the model (~90MB)
 #    After that, it runs from your local cache — no internet needed!
 
-print("🔢 Loading embedding model (first time downloads ~90MB)...")
+print(" Loading embedding model (first time downloads ~90MB)...")
 
 embeddings = HuggingFaceEmbeddings(
     model_name="all-MiniLM-L6-v2"
@@ -105,8 +105,8 @@ embeddings = HuggingFaceEmbeddings(
 
 # Let's see what an embedding looks like!
 sample_embedding = embeddings.embed_query("Hello world")
-print(f"📐 Embedding dimensions: {len(sample_embedding)}")
-print(f"📐 First 5 values: {sample_embedding[:5]}")
+print(f" Embedding dimensions: {len(sample_embedding)}")
+print(f" First 5 values: {sample_embedding[:5]}")
 print(f"   (These numbers represent the 'meaning' of 'Hello world')\n")
 
 
@@ -114,14 +114,14 @@ print(f"   (These numbers represent the 'meaning' of 'Hello world')\n")
 # STEP 4: Create the ChromaDB Vector Store (PERSISTENT!)
 # ============================================================
 
-# 🔑 KEY CONCEPT: persist_directory
+#  KEY CONCEPT: persist_directory
 #   - This tells ChromaDB to save data to the "chroma_db" folder
 #   - When you restart the script, data is still there!
 #   - Without this, everything would be lost on restart
 
 persist_directory = "./chroma_db"
 
-print("💾 Storing chunks in ChromaDB (persistent)...")
+print(" Storing chunks in ChromaDB (persistent)...")
 
 # This does 3 things in one call:
 #   1. Takes each chunk's text
@@ -134,8 +134,8 @@ vector_store = Chroma.from_documents(
     collection_name="pdf_collection"
 )
 
-print(f"✅ Stored {len(chunks)} chunks in ChromaDB!")
-print(f"📁 Data saved to: {os.path.abspath(persist_directory)}")
+print(f" Stored {len(chunks)} chunks in ChromaDB!")
+print(f" Data saved to: {os.path.abspath(persist_directory)}")
 print(f"   (This data survives script restarts!)\n")
 
 
@@ -149,14 +149,14 @@ print(f"   (This data survives script restarts!)\n")
 
 query = "What is attention mechanism?"
 
-print(f"🔍 Searching for: \"{query}\"\n")
+print(f" Searching for: \"{query}\"\n")
 
 # similarity_search returns the most relevant chunks
 # k=3 means "give me the top 3 most similar chunks"
 results = vector_store.similarity_search(query, k=3)
 
 for i, doc in enumerate(results, 1):
-    print(f"📄 Result {i} (Page {doc.metadata.get('page', '?')}):")
+    print(f" Result {i} (Page {doc.metadata.get('page', '?')}):")
     print(f"   {doc.page_content[:200]}...")
     print()
 
@@ -169,7 +169,7 @@ for i, doc in enumerate(results, 1):
 # Just load the existing database:
 
 print("="*50)
-print("💡 BONUS: Loading existing database (no re-processing)...\n")
+print(" BONUS: Loading existing database (no re-processing)...\n")
 
 existing_store = Chroma(
     persist_directory=persist_directory,
@@ -180,9 +180,9 @@ existing_store = Chroma(
 # Search the existing database
 results2 = existing_store.similarity_search("Attention", k=1)
 if results2:
-    print(f"📄 Found from existing DB (Page {results2[0].metadata.get('page', '?')}):")
+    print(f" Found from existing DB (Page {results2[0].metadata.get('page', '?')}):")
     print(f"   {results2[0].page_content[:200]}...")
 
-print("\n✅ Vector store created and searchable!")
-print("🎓 Next: Module 5 — Building the complete RAG chain")
+print("\n Vector store created and searchable!")
+print(" Next: Module 5 — Building the complete RAG chain")
 
