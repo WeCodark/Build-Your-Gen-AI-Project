@@ -1,18 +1,18 @@
 """
 ============================================================
-🧠 MODULE 6: The Final Product — Streamlit UI (app.py)
+ MODULE 6: The Final Product — Streamlit UI (app.py)
 ============================================================
 
-📖 WHAT WE'RE DOING:
+ WHAT WE'RE DOING:
     Turning everything we've built into a real, usable web application!
     
     Features:
       📤 Upload any PDF using a drag-and-drop file uploader
-      💬 Chat with the PDF using a ChatGPT-style interface
-      🧠 Remembers chat history within the session
+       Chat with the PDF using a ChatGPT-style interface
+       Remembers chat history within the session
       🛡️ Hallucination protection built-in
 
-📖 WHAT IS STREAMLIT?
+ WHAT IS STREAMLIT?
     Streamlit is a Python framework that turns scripts into web apps
     with ZERO HTML/CSS/JavaScript. You just write Python!
 
@@ -25,9 +25,9 @@
       - Your uploaded file? Needs re-processing.
       - Your vector store? Recreated every time.
     
-    It's like having amnesia after every click! 😱
+    It's like having amnesia after every click! 
 
-✅ THE SOLUTION (Session State):
+ THE SOLUTION (Session State):
     `st.session_state` is like a "memory box" that survives reruns.
     We store our chat history, vector store, and processing status
     in session state, so nothing is lost between interactions.
@@ -73,8 +73,8 @@ load_dotenv()
 
 # This MUST be the first Streamlit command in the script
 st.set_page_config(
-    page_title="📄 PDF Q&A Chatbot",
-    page_icon="🤖",
+    page_title=" PDF Q&A Chatbot",
+    page_icon="",
     layout="wide"
 )
 
@@ -83,7 +83,7 @@ st.set_page_config(
 # STEP 3: Initialize Session State
 # ============================================================
 
-# 🔑 THIS IS THE SOLUTION TO THE REFRESH LOOP!
+#  THIS IS THE SOLUTION TO THE REFRESH LOOP!
 #
 # st.session_state is a dictionary that persists across reruns.
 # We use it to store:
@@ -167,7 +167,7 @@ def process_pdf(uploaded_file):
       3. Creates embeddings and stores in ChromaDB
       4. Returns the vector store
     """
-    with st.spinner("📄 Reading PDF..."):
+    with st.spinner(" Reading PDF..."):
         # Streamlit gives us bytes, but PyPDFLoader needs a file path
         # So we save it to a temporary file first
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
@@ -184,7 +184,7 @@ def process_pdf(uploaded_file):
         )
         chunks = text_splitter.split_documents(pages)
 
-    with st.spinner(f"🔢 Creating embeddings for {len(chunks)} chunks..."):
+    with st.spinner(f" Creating embeddings for {len(chunks)} chunks..."):
         # Use a unique directory for each uploaded file
         persist_dir = os.path.join(tempfile.gettempdir(), "chroma_streamlit")
         
@@ -206,7 +206,7 @@ def process_pdf(uploaded_file):
 # ============================================================
 
 # --- Header ---
-st.title("📄 PDF Q&A Chatbot")
+st.title(" PDF Q&A Chatbot")
 st.caption("Upload a PDF and ask questions about it! Powered by Groq + LangChain + ChromaDB")
 
 # --- Sidebar: PDF Upload ---
@@ -228,7 +228,7 @@ with st.sidebar:
         st.session_state.pdf_processed = True
         st.session_state.chat_history = []  # clear old chats
 
-        st.success(f"✅ Processed: {num_pages} pages → {num_chunks} chunks")
+        st.success(f" Processed: {num_pages} pages → {num_chunks} chunks")
 
     if st.session_state.pdf_processed:
         st.info("📋 PDF loaded and ready for questions!")
@@ -306,7 +306,7 @@ if user_question:
         st.markdown(answer)
         
         # Show which pages were referenced (expandable)
-        with st.expander("📚 View Source Chunks"):
+        with st.expander(" View Source Chunks"):
             for i, doc in enumerate(response["context"], 1):
                 page_num = doc.metadata.get("page", "?")
                 st.markdown(f"**Chunk {i}** (Page {page_num}):")
